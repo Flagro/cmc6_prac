@@ -2,6 +2,8 @@
 #include <iomanip>
 #include "input_generator.hpp"
 #include "linear_system.hpp"
+#include "result_printer.hpp"
+#include "arguments_parser.hpp"
 
 using MatrixElementType = double;
 using VectorElementType = double;
@@ -11,7 +13,8 @@ enum { MATRIX_PRINT_COUNT = 5, VECTOR_PRINT_COUNT = 5 };
 
 int main(int argc, char *argv[]) {
     try {
-        InputGenerator<MatrixElementType, VectorElementType> input_generator(argc, argv);
+        Parser parser(argc, argv);
+        InputGenerator<MatrixElementType, VectorElementType> input_generator(parser.n, parser.test_id);
         const auto A = input_generator.get_A();
         const auto b = input_generator.get_b();
 
@@ -23,7 +26,7 @@ int main(int argc, char *argv[]) {
         LinearSystem<MatrixElementType, VectorElementType, ResultElementType> linear_system(A, b);
         double first_stage_elapsed_time, second_stage_elapsed_time;
         const auto x = linear_system.solve_reflection_method(&first_stage_elapsed_time, 
-                                                            &second_stage_elapsed_time);
+                                                             &second_stage_elapsed_time);
 
         std::cout << std::setprecision(7) << "Calculated vector x:" << std::endl;
         x.print(VECTOR_PRINT_COUNT);
@@ -36,6 +39,8 @@ int main(int argc, char *argv[]) {
 
         std::cout << std::setprecision(7) << "Residual: " << residual << std::endl
                                           << "Error: " << error << std::endl;
+
+        print_json_results();
     } catch(char const* s) {
         std::cout << "Error occured: " << s << std::endl;
     }

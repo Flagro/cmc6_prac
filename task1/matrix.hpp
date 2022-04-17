@@ -5,22 +5,6 @@
 #include "formula_generators.hpp"
 
 template <typename T>
-struct MatrixRow {
-public:
-    MatrixRow(size_t row_id, const BaseMatrixGenerator* matrix_generator_ptr): i(row_id), 
-        matrix_generator(matrix_generator_ptr) {}
-
-    T operator[](size_t j) {
-        return matrix_generator->get(i, j);
-    }
-
-    size_t i;
-    const BaseMatrixGenerator* matrix_generator;
-};
-
-enum MatrixContainType { FormulaGenerator, VectorContainer };
-
-template <typename T>
 class Matrix {
 public:
     Matrix(const BaseMatrixGenerator* matrix_generator_ptr) {
@@ -30,18 +14,6 @@ public:
             throw "passed empty matrix";
         }
         _values = values;
-    }
-
-    Matrix(std::vector<std::vector<T> > values) {
-        _contain_type = MatrixContainType::VectorContainer;
-        if (!values.size()) {
-            throw "passed empty matrix";
-        }
-        if (values.size() != values[0].size()) {
-            throw "passed non square matrix";
-        }
-        _values = values;
-        _n = values.size();
     }
 
     size_t size() const {
@@ -95,4 +67,39 @@ private:
     std::vector<std::vector<T> > _values;
     size_t _n;
     MatrixContainType _contain_type;
+};
+
+template <typename T>
+class FormulaMatrix {
+public:
+    Matrix(const BaseMatrixGenerator* matrix_generator_ptr) {
+        _contain_type = MatrixContainType::FormulaGenerator;
+        _n = matrix_generator_ptr->n;
+        if (!_n) {
+            throw "passed empty matrix";
+        }
+        _values = values;
+    }
+
+private:
+        
+};
+
+template <typename T>
+class ArrayMatrix {
+public:
+    Matrix(std::vector<std::vector<T> > values) {
+        _contain_type = MatrixContainType::VectorContainer;
+        if (!values.size()) {
+            throw "passed empty matrix";
+        }
+        if (values.size() != values[0].size()) {
+            throw "passed non square matrix";
+        }
+        _values = values;
+        _n = values.size();
+    }
+
+private:
+    std::vector<std::vector<T> > _values;
 };
