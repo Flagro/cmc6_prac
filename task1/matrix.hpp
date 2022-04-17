@@ -7,14 +7,9 @@
 template <typename T>
 class Matrix {
 public:
-    Matrix(const BaseMatrixGenerator* matrix_generator_ptr) {
-        _contain_type = MatrixContainType::FormulaGenerator;
-        _n = matrix_generator_ptr->n;
-        if (!_n) {
-            throw "passed empty matrix";
-        }
-        _values = values;
-    }
+    Matrix(size_t n) : _n(n) {}
+
+    virtual T get(size_t i, size_t j) const = 0;
 
     size_t size() const {
         return _n;
@@ -24,7 +19,7 @@ public:
         if (2 * print_count >= _n) {
             for (size_t i = 0; i < _n; ++i) {
                 for (size_t j = 0; j < _n; ++j) {
-                    std::cout << _values[i][j];
+                    std::cout << get(i, j);
                     if (j + 1 != _n) {
                         std::cout << ", ";
                     }
@@ -34,11 +29,11 @@ public:
         } else {
             for (size_t i = 0; i < print_count; ++i) {
                 for (size_t j = 0; j < print_count; ++j) {
-                    std::cout << _values[i][j] << ", ";
+                    std::cout << get(i, j) << ", ";
                 }
                 std::cout << ". . ., ";
                 for (size_t j = _n - print_count - 1; j < _n; ++j) {
-                    std::cout << _values[i][j];
+                    std::cout << get(i, j);
                     if (j + 1 != _n) {
                         std::cout << ", ";
                     }
@@ -48,11 +43,11 @@ public:
             std::cout << ". . ., ";
             for (size_t i = _n - print_count - 1; i < _n; ++i) {
                 for (size_t j = 0; j < print_count; ++j) {
-                    std::cout << _values[i][j] << ", ";
+                    std::cout << get(i, j) << ", ";
                 }
                 std::cout << ". . ., ";
                 for (size_t j = _n - print_count - 1; j < _n; ++j) {
-                    std::cout << _values[i][j];
+                    std::cout << get(i, j);
                     if (j + 1 != _n) {
                         std::cout << ", ";
                     }
@@ -63,33 +58,32 @@ public:
         std::cout << "size: " << _n << std::endl;
     }
 
-private:
-    std::vector<std::vector<T> > _values;
+protected:
     size_t _n;
-    MatrixContainType _contain_type;
 };
 
 template <typename T>
-class FormulaMatrix {
+class FormulaMatrix : private Matrix<T> {
 public:
-    Matrix(const BaseMatrixGenerator* matrix_generator_ptr) {
-        _contain_type = MatrixContainType::FormulaGenerator;
-        _n = matrix_generator_ptr->n;
+    FormulaMatrix(size_t n,  const MatrixGenerator& matrix_generator) : Matrix(n) {
         if (!_n) {
             throw "passed empty matrix";
         }
-        _values = values;
+        _matrix_generator = matrix_generator;
+    }
+
+    T get(size_t i, size_t j) {
+        return _matrix_generator(i, j, _n);
     }
 
 private:
-        
+    const MatrixGenerator& _matrix_generator;
 };
 
 template <typename T>
-class ArrayMatrix {
+class ArrayMatrix : private Matrix<T> {
 public:
-    Matrix(std::vector<std::vector<T> > values) {
-        _contain_type = MatrixContainType::VectorContainer;
+    ArrayMatrix(size_t n, const std::vector<std::vector<T> >& values) {
         if (!values.size()) {
             throw "passed empty matrix";
         }
@@ -98,6 +92,14 @@ public:
         }
         _values = values;
         _n = values.size();
+    }
+
+    T get(size_t i, size_t j) {
+        return _values[i][j];
+    }
+
+    T & get(size_t i, size_t j) {
+        return _values[i][j];
     }
 
 private:
