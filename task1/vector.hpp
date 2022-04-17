@@ -9,6 +9,8 @@ class Vector {
 public:
     Vector(size_t n) : _n(n) {}
 
+    virtual ~Vector() {}
+
     virtual T get(size_t i) const = 0;
 
     size_t size() const {
@@ -36,8 +38,7 @@ public:
                 }
             }
         }
-        std::cout << "], type: " << (_type == VectorType::Column ? "Column" : "Row") 
-                  << ", size: " << _n << std::endl;
+        std::cout << "], size: " << _n << std::endl;
     }
 
 protected:
@@ -45,40 +46,39 @@ protected:
 };
 
 template <typename T>
-class FormulaVector : private Vector<T> {
+class FormulaVector : public Vector<T> {
 public:
-    FormulaVector(size_t n,  const VectorGenerator& vector_generator) : Vector(n) {
-        if (!_n) {
+    FormulaVector(size_t n,  const VectorGenerator<T>& vector_generator) : Vector<T>(n), 
+                _vector_generator(vector_generator) {
+        if (!n) {
             throw "passed empty matrix";
         }
-        _vector_generator = vector_generator;
     }
 
-    T get(size_t i) {
-        return _vector_generator(i, _n);
+    T get(size_t i) const {
+        return _vector_generator.get(i, this->_n);
     }
 
 private:
-    const MatrixGenerator& _vector_generator;
+    const VectorGenerator<T>& _vector_generator;
 };
 
 template <typename T>
-class ArrayVector : private Vector<T> {
+class ArrayVector : public Vector<T> {
 public:
-    ArrayVector(size_t n, const std::vector<T>& values) : Vector(n)  {
+    ArrayVector(size_t n, const std::vector<T>& values) : Vector<T>(n)  {
         if (!values.size()) {
             throw "passed empty vector";
         }
         _values = values;
-        _n = n;
     }
 
-    T get(size_t i) {
+    T get(size_t i) const {
         return _values[i];
     }
 
-    T & get(size_t i) {
-        return _values[i];
+    void set(size_t i, T new_value) {
+        _values[i] = new_value;
     }
 
 private:

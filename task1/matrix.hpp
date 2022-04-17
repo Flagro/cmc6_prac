@@ -8,6 +8,8 @@ template <typename T>
 class Matrix {
 public:
     Matrix(size_t n) : _n(n) {}
+    
+    virtual ~Matrix() {}
 
     virtual T get(size_t i, size_t j) const = 0;
 
@@ -63,27 +65,27 @@ protected:
 };
 
 template <typename T>
-class FormulaMatrix : private Matrix<T> {
+class FormulaMatrix : public Matrix<T> {
 public:
-    FormulaMatrix(size_t n,  const MatrixGenerator& matrix_generator) : Matrix(n) {
-        if (!_n) {
+    FormulaMatrix(size_t n,  const MatrixGenerator<T>& matrix_generator) : Matrix<T>(n), 
+            _matrix_generator(matrix_generator) {
+        if (!n) {
             throw "passed empty matrix";
         }
-        _matrix_generator = matrix_generator;
     }
 
-    T get(size_t i, size_t j) {
-        return _matrix_generator(i, j, _n);
+    T get(size_t i, size_t j) const {
+        return _matrix_generator.get(i, j, this->_n);
     }
 
 private:
-    const MatrixGenerator& _matrix_generator;
+    const MatrixGenerator<T>& _matrix_generator;
 };
 
 template <typename T>
-class ArrayMatrix : private Matrix<T> {
+class ArrayMatrix : public Matrix<T> {
 public:
-    ArrayMatrix(size_t n, const std::vector<std::vector<T> >& values) {
+    ArrayMatrix(size_t n, const std::vector<std::vector<T> >& values) : Matrix<T>(n) {
         if (!values.size()) {
             throw "passed empty matrix";
         }
@@ -91,15 +93,14 @@ public:
             throw "passed non square matrix";
         }
         _values = values;
-        _n = values.size();
     }
 
-    T get(size_t i, size_t j) {
+    T get(size_t i, size_t j) const {
         return _values[i][j];
     }
 
-    T & get(size_t i, size_t j) {
-        return _values[i][j];
+    void set (size_t i, size_t j, T new_value) {
+        _values[i][j] = new_value;
     }
 
 private:
