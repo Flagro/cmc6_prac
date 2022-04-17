@@ -23,7 +23,7 @@ public:
                 for (size_t j = 0; j < _n; ++j) {
                     std::cout << get(i, j);
                     if (j + 1 != _n) {
-                        std::cout << ", ";
+                        std::cout << " ";
                     }
                 }
                 std::cout << std::endl;
@@ -31,27 +31,27 @@ public:
         } else {
             for (size_t i = 0; i < print_count; ++i) {
                 for (size_t j = 0; j < print_count; ++j) {
-                    std::cout << get(i, j) << ", ";
+                    std::cout << get(i, j) << " ";
                 }
-                std::cout << ". . ., ";
+                std::cout << ". . . ";
                 for (size_t j = _n - print_count - 1; j < _n; ++j) {
                     std::cout << get(i, j);
                     if (j + 1 != _n) {
-                        std::cout << ", ";
+                        std::cout << " ";
                     }
                 }
                 std::cout << std::endl;
             }
-            std::cout << ". . ., ";
+            std::cout << ". . . ";
             for (size_t i = _n - print_count - 1; i < _n; ++i) {
                 for (size_t j = 0; j < print_count; ++j) {
-                    std::cout << get(i, j) << ", ";
+                    std::cout << get(i, j) << " ";
                 }
-                std::cout << ". . ., ";
+                std::cout << ". . . ";
                 for (size_t j = _n - print_count - 1; j < _n; ++j) {
                     std::cout << get(i, j);
                     if (j + 1 != _n) {
-                        std::cout << ", ";
+                        std::cout << " ";
                     }
                 }
                 std::cout << std::endl;

@@ -8,7 +8,7 @@ public:
         }
         n = strtol(argv[1], nullptr, 10);
         threads_num = strtol(argv[2], nullptr, 10);
-        test_id = strtol(argv[3], nullptr, 10) - 1;
+        test_id = strtol(argv[3], nullptr, 10);
     }
 
     int n;
