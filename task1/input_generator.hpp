@@ -15,12 +15,12 @@ public:
     }
     std::unique_ptr<Matrix<matrix_T> > get_A() {
         std::unique_ptr<Matrix<matrix_T> > result(new FormulaMatrix<matrix_T>(_n, matrix_function_generators[_test_id - 1]));
-        return std::move(result);
+        return result;
     }
 
     std::unique_ptr<Vector<vector_T> > get_b() {
         std::unique_ptr<Vector<vector_T> > result(new FormulaVector<vector_T>(_n, vector_function_generators[_test_id - 1]));
-        return std::move(result);
+        return result;
     }
 
 private:
