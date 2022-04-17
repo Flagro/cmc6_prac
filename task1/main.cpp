@@ -9,7 +9,8 @@ using MatrixElementType = double;
 using VectorElementType = double;
 using ResultElementType = double;
 
-enum { MATRIX_PRINT_COUNT = 5, VECTOR_PRINT_COUNT = 5 };
+enum { MATRIX_PRINT_COUNT = 5, VECTOR_PRINT_COUNT = 5, DOUBLE_PRINT_PRECISION = 7 };
+enum { NO_CALC_RESUDUAL = -1, NO_CALC_ERROR = -1 };
 
 int main(int argc, char *argv[]) {
     try {
@@ -27,17 +28,22 @@ int main(int argc, char *argv[]) {
         const auto x_uptr = linear_system.solve_reflection_method(&first_stage_elapsed_time, 
                                                                   &second_stage_elapsed_time);
 
-        std::cout << std::setprecision(7) << "Calculated vector x:" << std::endl;
+        std::cout << std::setprecision(DOUBLE_PRINT_PRECISION) << "Calculated vector x:" << std::endl;
         x_uptr->print(VECTOR_PRINT_COUNT);
 
-        std::cout << std::setprecision(7) << "Upper triangulation elapsed time: " << first_stage_elapsed_time << std::endl
-                                          << "Backward Gauss move elapsed time: " << second_stage_elapsed_time << std::endl;
+        std::cout << std::setprecision(DOUBLE_PRINT_PRECISION) 
+                  << "Upper triangulation elapsed time: " << first_stage_elapsed_time << std::endl
+                  << "Backward Gauss move elapsed time: " << second_stage_elapsed_time << std::endl;
 
-        double residual = linear_system.calculate_residual(*x_uptr);
-        double error = linear_system.calculate_error(*x_uptr);
-
-        std::cout << std::setprecision(7) << "Residual: " << residual << std::endl
-                                          << "Error: " << error << std::endl;
+        double residual = NO_CALC_RESUDUAL, error = NO_CALC_ERROR;
+        if (parser.calc_residual) {
+            double residual = linear_system.calculate_residual(*x_uptr);
+            std::cout << std::setprecision(7) << "Residual: " << residual << std::endl;
+        }
+        if (parser.calc_error) {
+            double error = linear_system.calculate_error(*x_uptr);
+            std::cout << std::setprecision(7)<< "Error: " << error << std::endl;
+        }
 
         print_json_results();
     } catch(char const* s) {
