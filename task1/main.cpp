@@ -21,8 +21,11 @@ int main(int argc, char *argv[]) {
 
         std::cout << std::setprecision(7) << "Generated matrix A:" << std::endl;
         A_uptr->print(MATRIX_PRINT_COUNT);
+        std::cout << std::endl;
+
         std::cout << std::setprecision(7) << "Generated vector b:" << std::endl;
         b_uptr->print(VECTOR_PRINT_COUNT);
+        std::cout << std::endl;
         LinearSystem<MatrixElementType, VectorElementType, ResultElementType> linear_system(*A_uptr, *b_uptr);
         double first_stage_elapsed_time, second_stage_elapsed_time;
         const auto x_uptr = linear_system.solve_reflection_method(parser.threads_num, 
@@ -31,6 +34,7 @@ int main(int argc, char *argv[]) {
 
         std::cout << std::setprecision(DOUBLE_PRINT_PRECISION) << "Calculated vector x:" << std::endl;
         x_uptr->print(VECTOR_PRINT_COUNT);
+        std::cout << std::endl;
 
         std::cout << std::setprecision(DOUBLE_PRINT_PRECISION) 
                   << "Upper triangulation elapsed time: " << first_stage_elapsed_time << std::endl

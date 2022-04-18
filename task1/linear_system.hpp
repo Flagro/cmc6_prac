@@ -72,15 +72,26 @@ public:
                 }
             }
         }
+
         auto first_stage_elapsed_time_second = omp_get_wtime();
         std::cout << "Triangular form:" << std::endl;
         ArrayMatrix<result_T>(_n, result_matrix).print(TRIANGULAR_MATRIX_PRINT_COUNT);
+        ArrayVector<result_T>(_n, result_vector).print(TRIANGULAR_MATRIX_PRINT_COUNT);
+        std::cout << std::endl;
+
+        std::vector<result_T> result_array(_n, 0);
         auto second_stage_elapsed_time_first = omp_get_wtime();
-        
+
+        for (int i = (int)_n - 1; i >= 0; --i) {
+            result_array[i] = result_matrix[i][i] / result_vector[i];
+            for (int j = i - 1; j >= 0; --j) {
+                result_vector[j] -= result_matrix[j][i] * result_array[i];
+            }
+        }
         auto second_stage_elapsed_time_second = omp_get_wtime();
+
         *first_stage_elapsed_time = first_stage_elapsed_time_second - first_stage_elapsed_time_first;
         *second_stage_elapsed_time = second_stage_elapsed_time_second - second_stage_elapsed_time_first;
-        std::vector<result_T> result_array(_n, 0);
         std::unique_ptr<Vector<result_T> > result_uptr(new ArrayVector<result_T>(_n, result_array));
         return result_uptr;
     }
