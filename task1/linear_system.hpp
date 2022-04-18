@@ -17,12 +17,18 @@ public:
         }
     }
 
-    std::unique_ptr<Vector<result_T> > solve_reflection_method(int threads_num, 
+    std::unique_ptr<Vector<result_T> > solve_reflection_method(int threads_num, bool mpi_machine_used, 
                                                                double *first_stage_elapsed_time, 
                                                                double *second_stage_elapsed_time) {
-        omp_set_dynamic(0);
-        omp_set_num_threads(threads_num);
-        std::cout << "Solving linear system with Reflection Method using " << omp_get_num_threads() << " threads" << std::endl;
+        if (!mpi_machine_used) {
+            omp_set_dynamic(0);
+            omp_set_num_threads(threads_num);
+        }
+        #pragma omp parallel
+        {
+            #pragma omp single
+            std::cout << "Solving linear system with Reflection Method using " << omp_get_num_threads() << " threads" << std::endl;
+        }
         std::vector<std::vector<result_T> > result_matrix(_n, std::vector<result_T>(_n, 0));
         for (size_t i = 0; i < _n; ++i) {
             for (size_t j = 0 ; j < _n; ++j) {

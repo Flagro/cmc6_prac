@@ -1,5 +1,5 @@
 #pragma once
 
-void print_json_results() {
+void print_results() {
     
 }

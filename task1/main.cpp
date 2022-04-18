@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
         std::cout << std::endl;
         LinearSystem<MatrixElementType, VectorElementType, ResultElementType> linear_system(*A_uptr, *b_uptr);
         double first_stage_elapsed_time, second_stage_elapsed_time;
-        const auto x_uptr = linear_system.solve_reflection_method(parser.threads_num, 
+        const auto x_uptr = linear_system.solve_reflection_method(parser.threads_num, parser.polus_used, 
                                                                   &first_stage_elapsed_time, 
                                                                   &second_stage_elapsed_time);
 
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
             std::cout << std::setprecision(7)<< "Error: " << error << std::endl;
         }
 
-        print_json_results();
+        //print_results(parser.n, parser.test_id, first_stage_elapsed_time, second_stage_elapsed_time, residual, error);
     } catch(char const* s) {
         std::cout << "Error occured: " << s << std::endl;
     }
