@@ -1,3 +1,5 @@
+// This code was copied from Rosetta Code resource and was slightly modified
+
 #include <algorithm>
 #include <iostream>
 #include <vector>
