@@ -21,6 +21,7 @@ public:
                                                                double *first_stage_elapsed_time, 
                                                                double *second_stage_elapsed_time) {
         if (!mpi_machine_used) {
+            std::cout << "turning off omp set dynamic" << std::endl;;
             omp_set_dynamic(0);
             omp_set_num_threads(threads_num);
         }
