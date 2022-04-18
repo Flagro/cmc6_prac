@@ -25,7 +25,8 @@ int main(int argc, char *argv[]) {
         b_uptr->print(VECTOR_PRINT_COUNT);
         LinearSystem<MatrixElementType, VectorElementType, ResultElementType> linear_system(*A_uptr, *b_uptr);
         double first_stage_elapsed_time, second_stage_elapsed_time;
-        const auto x_uptr = linear_system.solve_reflection_method(&first_stage_elapsed_time, 
+        const auto x_uptr = linear_system.solve_reflection_method(parser.threads_num, 
+                                                                  &first_stage_elapsed_time, 
                                                                   &second_stage_elapsed_time);
 
         std::cout << std::setprecision(DOUBLE_PRINT_PRECISION) << "Calculated vector x:" << std::endl;
@@ -37,11 +38,11 @@ int main(int argc, char *argv[]) {
 
         double residual = NO_CALC_RESUDUAL, error = NO_CALC_ERROR;
         if (parser.calc_residual) {
-            double residual = linear_system.calculate_residual(*x_uptr);
+            residual = linear_system.calculate_residual(*x_uptr);
             std::cout << std::setprecision(7) << "Residual: " << residual << std::endl;
         }
         if (parser.calc_error) {
-            double error = linear_system.calculate_error(*x_uptr);
+            error = linear_system.calculate_error(*x_uptr);
             std::cout << std::setprecision(7)<< "Error: " << error << std::endl;
         }
 

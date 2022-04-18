@@ -18,7 +18,7 @@ public:
                 calc_error_found = true;
             } 
         }
-        calc_residual = calc_error_found;
+        calc_residual = calc_residual_found;
         calc_error = calc_error_found;
     }
 
