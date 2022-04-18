@@ -14,12 +14,22 @@ public:
         }
     }
     std::unique_ptr<Matrix<matrix_T> > get_A() {
-        std::unique_ptr<Matrix<matrix_T> > result(new FormulaMatrix<matrix_T>(_n, matrix_function_generators[_test_id - 1]));
+        std::vector<std::vector<matrix_T> > result_matrix(_n, std::vector<matrix_T>(_n, 0));
+        for (int i = 0; i < _n; ++i) {
+            for (int j = 0 ; j < _n; ++j) {
+                result_matrix[i][j] = matrix_function_generators[_test_id - 1].get(i, j, _n);
+            }
+        }
+        std::unique_ptr<Matrix<matrix_T> > result(new ArrayMatrix<matrix_T>(_n, result_matrix));
         return result;
     }
 
     std::unique_ptr<Vector<vector_T> > get_b() {
-        std::unique_ptr<Vector<vector_T> > result(new FormulaVector<vector_T>(_n, vector_function_generators[_test_id - 1]));
+        std::vector<vector_T> result_vector(_n, 0);
+        for (int i = 0; i < _n; ++i) {
+            result_vector[i] = vector_function_generators[_test_id - 1].get(i, _n);
+        }
+        std::unique_ptr<Vector<vector_T> > result(new ArrayVector<vector_T>(_n, result_vector));
         return result;
     }
 

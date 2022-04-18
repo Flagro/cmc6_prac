@@ -23,9 +23,13 @@ public:
 };
 
 std::vector<MatrixGenerator<double> > matrix_function_generators = {
-    {[](size_t i, size_t j, [[maybe_unused]] size_t n) { return (i * 1230) % j + 12; }, "A[i, j] = (i * 1230) % j + 12"}
+    {[](size_t i, size_t j, [[maybe_unused]] size_t n) { return rand() % 12381245823; }, "A[i, j] = TEST"},
+    {[](size_t i, size_t j, [[maybe_unused]] size_t n) { return (i * 37) % 5 + j * 13; }, "A[i, j] = (i * 37 + j * 13)"},
+    {[](size_t i, size_t j, [[maybe_unused]] size_t n) { return ((i * 137) % 47 + j * 13 + 176584) % 97; }, "A[i, j] = TEST"}
 };
 
 std::vector<VectorGenerator<double> > vector_function_generators = {
-    {[](size_t i, [[maybe_unused]] size_t n) { return (23123 * i) % 120; }, "b[i] = (23123 * i) % 120"}
+    {[](size_t i, [[maybe_unused]] size_t n) { return rand() % 12381245823; }, "b[i] = TEST"},
+    {[](size_t i, [[maybe_unused]] size_t n) { return 11 * i + 17; }, "b[i] = (11 * i) + 17"},
+    {[](size_t i, [[maybe_unused]] size_t n) { return ((159 * i) % 13 + 17) % 57; }, "b[i] = TEST"}
 };

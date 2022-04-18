@@ -32,7 +32,7 @@ public:
         }
         std::vector<result_T> x(_n, 0);
         auto first_stage_elapsed_time_first = omp_get_wtime();
-        for (size_t i = 0; i < _n; ++i) {
+        for (size_t i = 0; i + 1 < _n; ++i) {
             result_T s = 0;
             #pragma omp parallel for reduction(+:s) 
             for (size_t j = i + 1; j < _n; ++j) {
@@ -64,12 +64,12 @@ public:
             }
             #pragma omp parallel for
             for (size_t j = i + 1; j < _n; ++j) {
-                result_T alpha = 0;
+                result_T local_alpha = 0;
                 for (size_t k = i; k < _n; ++k) {
-                    alpha += result_matrix[k][j] * x[j];
+                    local_alpha += result_matrix[k][j] * x[k];
                 }
                 for (size_t k = i; k < _n; ++k) {
-                    result_matrix[k][j] -= 2 * x[j] * alpha;
+                    result_matrix[k][j] -= 2 * x[k] * local_alpha;
                 }
             }
         }
@@ -84,7 +84,7 @@ public:
         auto second_stage_elapsed_time_first = omp_get_wtime();
 
         for (int i = (int)_n - 1; i >= 0; --i) {
-            result_array[i] = result_matrix[i][i] / result_vector[i];
+            result_array[i] = result_vector[i] / result_matrix[i][i];
             for (int j = i - 1; j >= 0; --j) {
                 result_vector[j] -= result_matrix[j][i] * result_array[i];
             }
@@ -125,7 +125,13 @@ public:
         for (size_t i = 0; i < _n; ++i) {
             result_vector[i] = _b.get(i);
         }
-        std::vector<std::pair<double, double> > almost_exact_result = solveCramer(result_matrix, result_vector);
+        std::vector<std::pair<double, double> > almost_exact_result;
+        try {
+            almost_exact_result = solveCramer(result_matrix, result_vector);
+        } catch(std::runtime_error &e) {
+            std::cout << "Error occured, Not calculating the error" << std::endl;
+            return 0;
+        }
         std::cout << "Found an answer with cramer's rule:" << std::endl;
         for (size_t i = 0; i < _n; ++i) {
             std::cout << almost_exact_result[i].first / almost_exact_result[i].second << " ";
@@ -134,7 +140,7 @@ public:
         double error = 0;
         // comparing x_i and (a_1i / a_2i) means comparing (x_i * a_2i and a_1i)
         for (size_t i = 0; i < _n; ++i) {
-            double cur_difference = x.get(i) * almost_exact_result[i].second - almost_exact_result[i].first;
+            double cur_difference = (x.get(i) * almost_exact_result[i].second - almost_exact_result[i].first) / almost_exact_result[i].second;
             error += cur_difference * cur_difference;
         }
         return sqrt(error);
