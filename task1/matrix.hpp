@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <variant>
 #include <memory>
 #include "formula_generators.hpp"
 
