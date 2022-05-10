@@ -3,13 +3,12 @@
 class Parser {
 public:
     Parser(int argc, char* argv[]) {
-        if (argc < 5) {
+        if (argc < 4) {
             throw "not enough pragram parameters";
         }
         n = strtol(argv[1], nullptr, 10);
-        threads_num = strtol(argv[2], nullptr, 10);
+        expected_mpi_processes = strtol(argv[2], nullptr, 10);
         test_id = strtol(argv[3], nullptr, 10);
-        threads_mode = strtol(argv[4], nullptr, 10);
         bool calc_residual_found = false;
         bool calc_error_found = false;
         bool polus_used_found = false;
@@ -28,7 +27,7 @@ public:
     }
 
     int n;
-    int threads_num;
+    int expected_mpi_processes;
     int test_id;
     int threads_mode;
     bool polus_used;

@@ -18,8 +18,6 @@ int main(int argc, char *argv[]) {
         MPI_Init(NULL, NULL);
         int world_rank;
         MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-        int world_size;
-        MPI_Comm_size(MPI_COMM_WORLD, &world_size);
         Parser parser(argc, argv);
         InputGenerator<MatrixElementType, VectorElementType> input_generator(parser.n, parser.test_id);
         const auto A_uptr = input_generator.get_A();
@@ -36,9 +34,8 @@ int main(int argc, char *argv[]) {
 
         LinearSystem<MatrixElementType, VectorElementType, ResultElementType> linear_system(*A_uptr, *b_uptr);
         double first_stage_elapsed_time, second_stage_elapsed_time;
-        const auto x_uptr = linear_system.solve_reflection_method(parser.threads_num, parser.polus_used, 
-                                                                &first_stage_elapsed_time, 
-                                                                &second_stage_elapsed_time);
+        const auto x_uptr = linear_system.solve_reflection_method(&first_stage_elapsed_time, 
+                                                                  &second_stage_elapsed_time);
 
         if (!world_rank) {
             std::cout << std::setprecision(DOUBLE_PRINT_PRECISION) << "Calculated vector x:" << std::endl;
@@ -58,7 +55,7 @@ int main(int argc, char *argv[]) {
             }
 
             print_results(parser.n, parser.test_id, first_stage_elapsed_time, second_stage_elapsed_time, 
-                        residual, error, parser.threads_mode, parser.threads_num);
+                        residual, error, parser.expected_mpi_processes);
         }
     } catch(char const* s) {
         std::cout << "Error occured: " << s << std::endl;
