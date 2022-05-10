@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <cstdlib>
 #include <functional>
 
 template <typename matrix_T>
@@ -23,7 +24,7 @@ public:
 };
 
 std::vector<MatrixGenerator<double> > matrix_function_generators = {
-    {[]([[maybe_unused]] size_t i, [[maybe_unused]] size_t j, [[maybe_unused]] size_t n) { return rand() % 12381245823; }, "A[i, j] = rand() % 12381245823"},
+    {[]([[maybe_unused]] size_t i, [[maybe_unused]] size_t j, [[maybe_unused]] size_t n) { return (srand((i * 137 + j)), rand() % 10027); }, "A[i, j] = (srand((i * 137 + j)), rand() % 10027)"},
     {[]([[maybe_unused]] size_t i, [[maybe_unused]] size_t j, [[maybe_unused]] size_t n) { return (i * 37) % 5 + j * 13; }, "A[i, j] = (i * 37 + j * 13)"},
     {[]([[maybe_unused]] size_t i, [[maybe_unused]] size_t j, [[maybe_unused]] size_t n) { return ((i * 137) % 47 + j * 13 + 176584) % 97; }, "A[i, j] = ((i * 137) % 47 + j * 13 + 176584) % 97"}
 };
