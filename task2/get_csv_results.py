@@ -12,13 +12,12 @@ for line in lines:
     result_dict_list.append({
         "N": line[0],
         "Test Id": line[1],
-        "Threads Cnt": line[2],
-        "Expected Threads Cnt": line[9],
+        "MPI Processes Cnt": line[2],
+        "Expected MPI Processes Cnt": line[8],
         "Triangulation Time": line[3],
         "Backward Move Time": line[4],
         "Total Time": line[5],
         "Residual": line[6],
-        "Error": line[7],
-        "Mode": line[8].replace("_", " ")
+        "Error": line[7]
     })
 pd.DataFrame(result_dict_list).to_csv("./results.csv")
