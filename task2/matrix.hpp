@@ -41,7 +41,7 @@ public:
                 }
                 std::cout << std::endl;
             }
-            std::cout << ". . . ";
+            std::cout << ". . . " << std::endl;
             for (size_t i = _n - print_count - 1; i < _n; ++i) {
                 for (size_t j = 0; j < print_count; ++j) {
                     std::cout << get(i, j) << " ";
