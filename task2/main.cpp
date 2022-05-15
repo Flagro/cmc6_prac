@@ -36,14 +36,18 @@ int main(int argc, char *argv[]) {
         double first_stage_elapsed_time, second_stage_elapsed_time;
         const auto x_uptr = linear_system.solve_reflection_method(&first_stage_elapsed_time, 
                                                                   &second_stage_elapsed_time);
+        double max_first_stage_elapsed_time, max_second_stage_elapsed_time;
+
+        MPI_Reduce(&first_stage_elapsed_time, &max_first_stage_elapsed_time, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+        MPI_Reduce(&second_stage_elapsed_time, &max_second_stage_elapsed_time, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
         if (!world_rank) {
             std::cout << std::setprecision(DOUBLE_PRINT_PRECISION) << "Calculated vector x:" << std::endl;
             x_uptr->print(VECTOR_PRINT_COUNT);
             std::cout << std::endl;
             std::cout << std::setprecision(DOUBLE_PRINT_PRECISION) 
-                    << "Upper triangulation elapsed time: " << first_stage_elapsed_time << std::endl
-                    << "Backward Gauss move elapsed time: " << second_stage_elapsed_time << std::endl;
+                    << "Upper triangulation elapsed time: " << first_stage_elapsed_time << " seconds" << std::endl
+                    << "Backward Gauss move elapsed time: " << second_stage_elapsed_time << " seconds" << std::endl;
             double residual = NO_CALC_RESUDUAL, error = NO_CALC_ERROR;
             if (parser.calc_residual) {
                 residual = linear_system.calculate_residual(*x_uptr);
@@ -54,7 +58,7 @@ int main(int argc, char *argv[]) {
                 std::cout << std::setprecision(7)<< "Error: " << error << std::endl;
             }
 
-            print_results(parser.n, parser.test_id, first_stage_elapsed_time, second_stage_elapsed_time, 
+            print_results(parser.n, parser.test_id, max_first_stage_elapsed_time, max_second_stage_elapsed_time, 
                         residual, error, parser.expected_mpi_processes);
         }
     } catch(char const* s) {
