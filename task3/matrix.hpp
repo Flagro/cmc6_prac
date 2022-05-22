@@ -1,16 +1,31 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <algorithm>
 #include "formula_generators.hpp"
+#include "ellpack_format.hpp"
 
 template <typename T>
-class Matrix {
+class SparseMatrix {
 public:
-    Matrix(size_t n) : _n(n) {}
-    
-    virtual ~Matrix() {}
+    SparseMatrix(const EllpackMatrix<T>& ellpack_matrix) : _n(ellpack_matrix.n), _ellpack_data(ellpack_matrix) {}
 
-    virtual T get(size_t i, size_t j) const = 0;
+    const T & get(size_t i, size_t j) const {
+        static const T zero_val = 0;
+        auto lower_bound_it = std::lower_bound(_ellpack_data.ellpack_col[i].begin(), _ellpack_data.ellpack_col[i].begin(), j);
+        if (lower_bound_it != _ellpack_data.ellpack_col[i].begin() && *lower_bound_it == j) {
+            return _ellpack_data.ellpack_val[i][lower_bound_it - _ellpack_data.ellpack_col[i].begin()];
+        }
+        return zero_val;
+    }
+
+    T get_ellpack_col(size_t i, size_t j) const {
+        return 0;
+    }
+
+    T get_ellpack_val(size_t i, size_t j) const {
+        return 0;
+    }
 
     size_t size() const {
         return _n;
@@ -59,49 +74,7 @@ public:
         std::cout << "size: " << _n << std::endl;
     }
 
-protected:
+private:
     size_t _n;
-};
-
-template <typename T>
-class FormulaMatrix : public Matrix<T> {
-public:
-    FormulaMatrix(size_t n,  const MatrixGenerator<T>& matrix_generator) : Matrix<T>(n), 
-            _matrix_generator(matrix_generator) {
-        if (!n) {
-            throw "passed empty matrix";
-        }
-    }
-
-    T get(size_t i, size_t j) const {
-        return _matrix_generator.get(i, j, this->_n);
-    }
-
-private:
-    const MatrixGenerator<T>& _matrix_generator;
-};
-
-template <typename T>
-class ArrayMatrix : public Matrix<T> {
-public:
-    ArrayMatrix(size_t n, const std::vector<std::vector<T> >& values) : Matrix<T>(n) {
-        if (!values.size()) {
-            throw "passed empty matrix";
-        }
-        if (values.size() != values[0].size()) {
-            throw "passed non square matrix";
-        }
-        _values = values;
-    }
-
-    T get(size_t i, size_t j) const {
-        return _values[i][j];
-    }
-
-    void set (size_t i, size_t j, T new_value) {
-        _values[i][j] = new_value;
-    }
-
-private:
-    std::vector<std::vector<T> > _values;
+    EllpackMatrix<T> _ellpack_data;
 };

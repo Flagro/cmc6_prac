@@ -2,16 +2,14 @@
 #include <vector>
 #include <iostream>
 
-enum class VectorType { Column, Row };
-
 template <typename T>
-class Vector {
+class DenseVector {
 public:
-    Vector(size_t n) : _n(n) {}
+    DenseVector(const std::vector<T>& x) : _n(x.size()), _vector_data(x) {}
 
-    virtual ~Vector() {}
-
-    virtual T get(size_t i) const = 0;
+    T get(size_t i) const {
+        return _vector_data[i];
+    }
 
     size_t size() const {
         return _n;
@@ -41,46 +39,7 @@ public:
         std::cout << "], size: " << _n << std::endl;
     }
 
-protected:
+private:
     size_t _n;
-};
-
-template <typename T>
-class FormulaVector : public Vector<T> {
-public:
-    FormulaVector(size_t n,  const VectorGenerator<T>& vector_generator) : Vector<T>(n), 
-                _vector_generator(vector_generator) {
-        if (!n) {
-            throw "passed empty matrix";
-        }
-    }
-
-    T get(size_t i) const {
-        return _vector_generator.get(i, this->_n);
-    }
-
-private:
-    const VectorGenerator<T>& _vector_generator;
-};
-
-template <typename T>
-class ArrayVector : public Vector<T> {
-public:
-    ArrayVector(size_t n, const std::vector<T>& values) : Vector<T>(n)  {
-        if (!values.size()) {
-            throw "passed empty vector";
-        }
-        _values = values;
-    }
-
-    T get(size_t i) const {
-        return _values[i];
-    }
-
-    void set(size_t i, T new_value) {
-        _values[i] = new_value;
-    }
-
-private:
-    std::vector<T> _values;
+    std::vector<T> _vector_data;
 };

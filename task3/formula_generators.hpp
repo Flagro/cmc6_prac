@@ -1,35 +1,49 @@
 #pragma once
 #include <vector>
 #include <functional>
+#include <cmath>
+#include "ellpack_format.hpp"
 
 template <typename matrix_T>
-struct MatrixGenerator {
+struct CubeMatrixGenerator {
 public:
-    MatrixGenerator(const std::function<matrix_T([[maybe_unused]] size_t, [[maybe_unused]] size_t, [[maybe_unused]] size_t)>& get_function, 
-                    const std::string& representation_string): get(get_function), 
-                                                               function_representation(representation_string) {}
-    const std::function<matrix_T(size_t, size_t, size_t)> get;
-    const std::string function_representation;
+    CubeMatrixGenerator(const std::function<EllpackMatrix<matrix_T>(size_t, size_t, size_t)>& generate_function): generate(generate_function) {}
+    const std::function<EllpackMatrix<matrix_T>(size_t, size_t, size_t)> generate;
 };
 
 template <typename vector_T>
 struct VectorGenerator {
 public:
-    VectorGenerator(const std::function<vector_T(size_t, [[maybe_unused]] size_t)>& get_function, 
-                    const std::string& representation_string): get(get_function), 
-                                                               function_representation(representation_string) {}
-    const std::function<vector_T(size_t, size_t)> get;
-    const std::string function_representation;
+    VectorGenerator(const std::function<std::vector<vector_T>(size_t)>& generate_function): generate(generate_function) {}
+    const std::function<std::vector<vector_T>(size_t)> generate;
 };
 
-std::vector<MatrixGenerator<double> > matrix_function_generators = {
-    {[]([[maybe_unused]] size_t i, [[maybe_unused]] size_t j, [[maybe_unused]] size_t n) { return rand() % 12381245823; }, "A[i, j] = rand() % 12381245823"},
-    {[]([[maybe_unused]] size_t i, [[maybe_unused]] size_t j, [[maybe_unused]] size_t n) { return (i * 37) % 5 + j * 13; }, "A[i, j] = (i * 37 + j * 13)"},
-    {[]([[maybe_unused]] size_t i, [[maybe_unused]] size_t j, [[maybe_unused]] size_t n) { return ((i * 137) % 47 + j * 13 + 176584) % 97; }, "A[i, j] = ((i * 137) % 47 + j * 13 + 176584) % 97"}
+std::vector<CubeMatrixGenerator<double> > cube_matrix_function_generators = {
+    {[](size_t n_x, size_t n_y, size_t n_z) {
+        static const size_t M = 7;
+        static const double PI = 3.14;
+        size_t n = n_x * n_y * n_z;
+        EllpackMatrix<double> result;
+        result.n = n;
+        result.m = M;
+        result.ellpack_col = std::vector<std::vector<size_t> >(n, std::vector<size_t>(M));
+        result.ellpack_val = std::vector<std::vector<double> >(n, std::vector<double>(M));
+        for (size_t i = 0; i < n; ++i) {
+            for (size_t j = 0; j < M; ++j) {
+                result.ellpack_col[i][j];
+                result.ellpack_val[i][j];
+            }
+        }
+        return result;
+    }}
 };
 
 std::vector<VectorGenerator<double> > vector_function_generators = {
-    {[]([[maybe_unused]] size_t i, [[maybe_unused]] size_t n) { return rand() % 12381245823; }, "b[i] = rand() % 12381245823"},
-    {[]([[maybe_unused]] size_t i, [[maybe_unused]] size_t n) { return 11 * i + 17; }, "b[i] = (11 * i) + 17"},
-    {[]([[maybe_unused]] size_t i, [[maybe_unused]] size_t n) { return ((159 * i) % 13 + 17) % 57; }, "b[i] = ((159 * i) % 13 + 17) % 57"}
+    {[](size_t n) {
+        std::vector<double> result(n);
+        for (size_t i = 0; i < n; ++i) {
+            result[i] = cos(i);
+        }
+        return result;
+    }}
 };
