@@ -67,7 +67,7 @@ public:
                 r_previous = r_k;
             }
             x_previous = x_k;
-        } while (convergence);
+        } while (!convergence);
         
         return x_previous;
     }
