@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include "test.hpp"
 #include "arguments_parser.hpp"
 #include "input_generator.hpp"
 #include "linear_system.hpp"
@@ -16,6 +17,15 @@ enum { NO_CALC_RESUDUAL = -1, NO_CALC_ERROR = -1 };
 int main(int argc, char *argv[]) {
     try {
         Parser parser(argc, argv);
+        if (parser.run_tests) {
+            try {
+                run_tests();
+                std::cout << "Tests successfully passed" << std::endl;
+            } catch (char const* s) {
+                std::cout << "OP Tests failed, reason: " << s << std::endl;
+            }
+        }
+
         InputGenerator<MatrixElementType, VectorElementType> input_generator(parser.n_x, parser.n_y, parser.n_z, DEFAULT_TEST_ID);
         auto A = input_generator.get_A();
         auto b = input_generator.get_b();
@@ -52,10 +62,10 @@ int main(int argc, char *argv[]) {
             std::cout << std::setprecision(DOUBLE_PRINT_PRECISION)<< "Error: " << error << std::endl;
         }
 
-        print_results(parser.n_x, parser.n_y, parser.n_z, DEFAULT_TEST_ID, 
-                      first_stage_elapsed_time, second_stage_elapsed_time, 
-                      residual, error, parser.threads_mode, parser.threads_num);
-    } catch(char const* s) {
+        //print_results(parser.n_x, parser.n_y, parser.n_z, DEFAULT_TEST_ID, 
+        //              first_stage_elapsed_time, second_stage_elapsed_time, 
+        //              residual, error, parser.threads_mode, parser.threads_num);
+    } catch (char const* s) {
         std::cout << "Error occured: " << s << std::endl;
     }
     return 0;

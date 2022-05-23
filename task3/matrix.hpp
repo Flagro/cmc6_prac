@@ -23,11 +23,11 @@ public:
         return _ellpack_data.m;
     }
 
-    const size_t & get_ellpack_col(size_t i) const {
+    const std::vector<size_t> & get_ellpack_col(size_t i) const {
         return _ellpack_data.ellpack_col[i];
     }
 
-    const T & get_ellpack_val(size_t i) const {
+    const std::vector<T> & get_ellpack_val(size_t i) const {
         return _ellpack_data.ellpack_val[i];
     }
 

@@ -77,5 +77,17 @@ std::vector<VectorGenerator<double> > vector_function_generators = {
             result[i] = cos(i);
         }
         return result;
+    }}, {[](size_t n) {
+        std::vector<double> result(n);
+        for (size_t i = 0; i < n; ++i) {
+            result[i] = cos(i * i);
+        }
+        return result;
+    }}, {[](size_t n) {
+        std::vector<double> result(n);
+        for (size_t i = 0; i < n; ++i) {
+            result[i] = sin(i * i);
+        }
+        return result;
     }}
 };

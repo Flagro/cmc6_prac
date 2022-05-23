@@ -31,11 +31,12 @@ public:
             std::cout << "Solving linear system with CG Method using " << omp_get_num_threads() << " threads" << std::endl;
         }
 
+        std::vector<result_T> x(_n, 0);
+        
         // CG SOLVER STARTS HERE
 
         // CG SOLVER ENDS HERE
         
-        std::vector<result_T> x(_n, 0);
         DenseVector<result_T> result(x);
         return result;
     }
@@ -44,7 +45,7 @@ public:
         std::vector<result_T> residual(_n, 0);
         #pragma omp parallel for
         for (size_t i = 0; i < _n; ++i) {
-            for (size_t j = 0; j < _A.get_ellpack_m; ++j) {
+            for (size_t j = 0; j < _A.get_ellpack_m(); ++j) {
                 residual[i] += _A.get_ellpack_val(i)[j] * x.get(_A.get_ellpack_col(i)[j]);
             }
             residual[i] -= _b.get(i);
