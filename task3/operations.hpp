@@ -67,7 +67,7 @@ DenseVector<result_T> SpMV(const SparseMatrix<T1> &sparse_matrix, const DenseVec
         result_T cur_result = 0;
         for (size_t j = 0; j < sparse_matrix.get_ellpack_m(); ++j) {
             size_t cur_col = sparse_matrix.get_ellpack_col(i)[j];
-            if (cur_col > dense_vector.size()) {
+            if (cur_col < dense_vector.size()) {
                 cur_result += sparse_matrix.get_ellpack_val(i)[j] * dense_vector.get(cur_col);
             }
         }

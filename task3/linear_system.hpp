@@ -55,9 +55,6 @@ public:
                 p_k = axpby<result_T>(1, z_k, beta_k, p_previous, &elapsed_time, calculate_bandwidth, &bandwidth);
             }
             auto q_k = SpMV<result_T>(_A, p_k, &elapsed_time, calculate_bandwidth, &bandwidth);
-            _A.print(5);
-            p_k.print(5);
-            q_k.print(5);
             auto alpha_k = ro_k / dot_product<result_T>(p_k, q_k, &elapsed_time, calculate_bandwidth, &bandwidth);
             auto x_k = axpby<result_T>(1, x_previous, alpha_k, p_k, &elapsed_time, calculate_bandwidth, &bandwidth);
             auto r_k = axpby<result_T>(1, r_previous, -alpha_k, q_k, &elapsed_time, calculate_bandwidth, &bandwidth);
