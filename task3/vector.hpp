@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <cmath>
 #include <iostream>
 
 template <typename T>
@@ -13,6 +14,14 @@ public:
 
     size_t size() const {
         return _n;
+    }
+
+    T norm_l2() const {
+        T sqr_sum = 0;
+        for (size_t i = 0; i < _n; ++i) {
+            sqr_sum += _vector_data[i] * _vector_data[i];
+        }
+        return sqrt(sqr_sum);
     }
 
     void print(size_t print_count) const {
