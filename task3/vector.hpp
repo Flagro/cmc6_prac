@@ -6,6 +6,7 @@
 template <typename T>
 class DenseVector {
 public:
+    DenseVector() = default;
     DenseVector(const std::vector<T>& x) : _n(x.size()), _vector_data(x) {}
 
     T get(size_t i) const {

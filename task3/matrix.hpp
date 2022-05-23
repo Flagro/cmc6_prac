@@ -8,6 +8,7 @@
 template <typename T>
 class SparseMatrix {
 public:
+    SparseMatrix() = default;
     SparseMatrix(const EllpackMatrix<T>& ellpack_matrix) : _n(ellpack_matrix.n), _ellpack_data(ellpack_matrix) {}
 
     const T & get(size_t i, size_t j) const {

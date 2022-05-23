@@ -15,6 +15,7 @@ public:
         bool calc_error_found = false;
         bool polus_used_found = false;
         bool run_tests_found = false;
+        bool calculate_bandwidth_found = false;
         for (int i = 1; i < argc; ++i) {
             if (std::string(argv[i]) == "--residual") {
                 calc_residual_found = true;
@@ -24,12 +25,15 @@ public:
                 polus_used_found = true;
             } else if (std::string(argv[i]) == "--test") {
                 run_tests_found = true;
+            } else if (std::string(argv[i]) == "--bandwidth") {
+                calculate_bandwidth_found = true;
             }
         }
         calc_residual = calc_residual_found;
         calc_error = calc_error_found;
         polus_used = polus_used_found;
         run_tests = run_tests_found;
+        calculate_bandwidth = calculate_bandwidth_found;
     }
 
     int n_x, n_y, n_z;
@@ -40,4 +44,5 @@ public:
     bool calc_residual;
     bool calc_error;
     bool run_tests;
+    bool calculate_bandwidth;
 };

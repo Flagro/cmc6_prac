@@ -42,7 +42,8 @@ int main(int argc, char *argv[]) {
         double first_stage_elapsed_time, second_stage_elapsed_time;
         const auto x = linear_system.solve_cg_method(parser.threads_num, parser.polus_used,
                                                      &first_stage_elapsed_time,
-                                                     &second_stage_elapsed_time);
+                                                     &second_stage_elapsed_time,
+                                                     parser.calculate_bandwidth, 100, 0.0001);
 
         std::cout << std::setprecision(DOUBLE_PRINT_PRECISION) << "Calculated vector x:" << std::endl;
         x.print(VECTOR_PRINT_COUNT);

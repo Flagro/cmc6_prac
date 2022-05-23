@@ -5,6 +5,7 @@
 #include "matrix.hpp"
 #include "vector.hpp"
 #include "cramer_rule.hpp"
+#include "operations.hpp"
 
 enum { TRIANGULAR_MATRIX_PRINT_COUNT = 5};
 
@@ -19,7 +20,10 @@ public:
 
     DenseVector<result_T> solve_cg_method(int threads_num, bool mpi_machine_used, 
                                           double *first_stage_elapsed_time, 
-                                          double *second_stage_elapsed_time) {
+                                          double *second_stage_elapsed_time,
+                                          bool calculate_bandwidth,
+                                          long long max_iter,
+                                          double epsilon) {
         if (!mpi_machine_used) {
             std::cout << "turning off omp set dynamic" << std::endl;
             omp_set_dynamic(0);
@@ -31,14 +35,44 @@ public:
             std::cout << "Solving linear system with CG Method using " << omp_get_num_threads() << " threads" << std::endl;
         }
 
-        std::vector<result_T> x(_n, 0);
+        double elapsed_time;
+        double bandwidth;
+        DenseVector<result_T> x_previous(std::vector<result_T>(_n, 0));
+        auto Ax_0 = SpMV<result_T>(_A, x_previous, &elapsed_time, calculate_bandwidth, &bandwidth);
+        auto r_previous = axpby<result_T>(1, _b, -1, Ax_0, &elapsed_time, calculate_bandwidth, &bandwidth);
+        DenseVector<result_T> p_previous;
+        result_T ro_previous;
+        bool convergence = false;
+        int iteration = 1;
+        do {
+            DenseVector<result_T> z_k = r_previous;
+            auto ro_k = dot_product<result_T>(r_previous, z_k, &elapsed_time, calculate_bandwidth, &bandwidth);
+            DenseVector<result_T> p_k;
+            if (iteration == 1) {
+                p_k = z_k;
+            } else {
+                auto beta_k = ro_k / ro_previous;
+                p_k = axpby<result_T>(1, z_k, beta_k, p_previous, &elapsed_time, calculate_bandwidth, &bandwidth);
+            }
+            auto q_k = SpMV<result_T>(_A, p_k, &elapsed_time, calculate_bandwidth, &bandwidth);
+            _A.print(5);
+            p_k.print(5);
+            q_k.print(5);
+            auto alpha_k = ro_k / dot_product<result_T>(p_k, q_k, &elapsed_time, calculate_bandwidth, &bandwidth);
+            auto x_k = axpby<result_T>(1, x_previous, alpha_k, p_k, &elapsed_time, calculate_bandwidth, &bandwidth);
+            auto r_k = axpby<result_T>(1, r_previous, -alpha_k, q_k, &elapsed_time, calculate_bandwidth, &bandwidth);
+            if (ro_k < epsilon || iteration >= max_iter) {
+                convergence = true;
+            } else {
+                ++iteration;
+                p_previous = p_k;
+                ro_previous = ro_k;
+                r_previous = r_k;
+            }
+            x_previous = x_k;
+        } while (convergence);
         
-        // CG SOLVER STARTS HERE
-
-        // CG SOLVER ENDS HERE
-        
-        DenseVector<result_T> result(x);
-        return result;
+        return x_previous;
     }
 
     double calculate_residual(const DenseVector<result_T>& x) {
