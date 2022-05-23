@@ -19,12 +19,16 @@ public:
         return zero_val;
     }
 
-    T get_ellpack_col(size_t i, size_t j) const {
-        return 0;
+    size_t get_ellpack_m() const {
+        return _ellpack_data.m;
     }
 
-    T get_ellpack_val(size_t i, size_t j) const {
-        return 0;
+    const size_t & get_ellpack_col(size_t i) const {
+        return _ellpack_data.ellpack_col[i];
+    }
+
+    const T & get_ellpack_val(size_t i) const {
+        return _ellpack_data.ellpack_val[i];
     }
 
     size_t size() const {

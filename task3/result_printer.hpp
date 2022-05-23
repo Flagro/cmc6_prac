@@ -2,7 +2,8 @@
 #include "omp.h"
 #include <cstdio>
 
-void print_results(int n, int test_id, double first_time, double second_time, double residual, double error, int mode, int passed_threads_num) {
+void print_results(int n_x, int n_y, int n_z, int test_id, 
+        double first_time, double second_time, double residual, double error, int mode, int passed_threads_num) {
     int threads_num = 0;
     #pragma omp parallel
     {
@@ -31,7 +32,7 @@ void print_results(int n, int test_id, double first_time, double second_time, do
     FILE *my_f;
     my_f = fopen("./output.txt", "a");
     fprintf(my_f, "%d %d %d %.10lf %.10lf %.10lf %.10lf %.10lf %s %d\n", 
-            n, test_id, threads_num, first_time, second_time, first_time + second_time, 
+            n_x, n_y, n_z, test_id, threads_num, first_time, second_time, first_time + second_time, 
             residual, error, mode_string, passed_threads_num);
     fclose(my_f);
 }
