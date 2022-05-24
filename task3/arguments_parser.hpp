@@ -1,9 +1,11 @@
 #pragma once
 
+enum { DEFAULT_TEST_ID = 1 };
+
 class Parser {
 public:
     Parser(int argc, char* argv[]) {
-        if (argc < 6) {
+        if (argc < 8) {
             throw "not enough pragram parameters";
         }
         n_x = strtol(argv[1], nullptr, 10);
@@ -11,6 +13,8 @@ public:
         n_z = strtol(argv[3], nullptr, 10);
         threads_num = strtol(argv[4], nullptr, 10);
         threads_mode = strtol(argv[5], nullptr, 10);
+        cg_max_iterations = strtol(argv[6], nullptr, 10);
+        cg_epsilon = strtod(argv[7], nullptr);
         bool calc_residual_found = false;
         bool calc_error_found = false;
         bool polus_used_found = false;
@@ -34,6 +38,7 @@ public:
         polus_used = polus_used_found;
         run_tests = run_tests_found;
         calculate_bandwidth = calculate_bandwidth_found;
+        test_id = DEFAULT_TEST_ID;
     }
 
     int n_x, n_y, n_z;
@@ -45,4 +50,6 @@ public:
     bool calc_error;
     bool run_tests;
     bool calculate_bandwidth;
+    int cg_max_iterations;
+    double cg_epsilon;
 };
