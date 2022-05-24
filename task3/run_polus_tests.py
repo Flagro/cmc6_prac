@@ -12,7 +12,7 @@ def get_bsub_input_simple(matrix_size, threads_count, test_id, max_cg_iterations
             f"#BSUB -o a.out.out\n"
             f"#BSUB -e a.out.err\n"
             f"#BSUB -R \"span[hosts=1]\"\n"
-            f"OMP_NUM_THREADS={threads_count} ./a.out {matrix_size[0]} {matrix_size[1]} {matrix_size[2]} {threads_count} {test_id} 1 {max_cg_iterations} {epsilon_string} --residual --polus --bandwidth\n")
+            f"OMP_NUM_THREADS={threads_count} ./a.out {matrix_size[0]} {matrix_size[1]} {matrix_size[2]} {threads_count} 1 {max_cg_iterations} {epsilon_string} --residual --polus --bandwidth\n")
 
 
 def get_bsub_input_one_threads_per_unit(matrix_size, threads_count, test_id, max_cg_iterations, cg_epsilon):
@@ -22,7 +22,7 @@ def get_bsub_input_one_threads_per_unit(matrix_size, threads_count, test_id, max
             f"#BSUB -o a.out.out\n" 
             f"#BSUB -e a.out.err\n"
             f"#BSUB -R \"affinity[core({threads_count})]\"\n"
-            f"/polusfs/lsf/openmp/launchOpenMP.py ./a.out {matrix_size[0]} {matrix_size[1]} {matrix_size[2]} {threads_count} {test_id} 2 {max_cg_iterations} {epsilon_string} --residual --polus --bandwidth\n")
+            f"/polusfs/lsf/openmp/launchOpenMP.py ./a.out {matrix_size[0]} {matrix_size[1]} {matrix_size[2]} {threads_count} 2 {max_cg_iterations} {epsilon_string} --residual --polus --bandwidth\n")
 
 
 def get_bsub_input_two_threads_per_unit(matrix_size, threads_count, test_id, max_cg_iterations, cg_epsilon):
@@ -34,7 +34,7 @@ def get_bsub_input_two_threads_per_unit(matrix_size, threads_count, test_id, max
             f"#BSUB -e a.out.err\n"
             f"#BSUB -R \"affinity[core({core_units})]\"\n"
             f"OMP_NUM_THREADS={threads_count}\n"
-            f"/polusfs/lsf/openmp/launchOpenMP.py ./a.out {matrix_size[0]} {matrix_size[1]} {matrix_size[2]} {threads_count} {test_id} 3 {max_cg_iterations} {epsilon_string} --residual --polus --bandwidth\n")
+            f"/polusfs/lsf/openmp/launchOpenMP.py ./a.out {matrix_size[0]} {matrix_size[1]} {matrix_size[2]} {threads_count} 3 {max_cg_iterations} {epsilon_string} --residual --polus --bandwidth\n")
 
 
 def get_valid_bsub_inputs(matrix_size, threads_count, test_id, max_cg_iterations, cg_epsilon):

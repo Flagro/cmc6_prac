@@ -47,7 +47,9 @@ std::vector<CubeMatrixGenerator<double> > cube_matrix_function_generators = {
                     size_t cur_col_offset = 0;
                     size_t diagonal_el_offset = 0;
                     double non_diagonal_norm_sum = 0;
-                    for (const auto & [cur_col, to_use] : cur_cols_ids) {
+                    for (const auto &el : cur_cols_ids) {
+                        const auto cur_col = el.first;
+                        const auto to_use = el.second;
                         if (to_use) {
                             result.ellpack_col[cur_row][cur_col_offset] = cur_col;
                             if (cur_row == cur_col) {
