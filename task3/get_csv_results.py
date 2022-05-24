@@ -1,3 +1,4 @@
+from unittest import result
 import pandas as pd
 
 
@@ -32,4 +33,11 @@ for line in lines:
         "Mode": line[19].replace("_", " "),
         "Threading Mode": str(line[4]) + " (" + str(line[19].replace("_", " ")) + ")"
     })
-pd.DataFrame(result_dict_list).to_csv("./results.csv")
+
+result_df = pd.DataFrame(result_dict_list)
+result_df = result_df.groupby([
+    "N_x", "N_y", "N_z", "Test Id", "Threads Cnt", "Expected Threads Cnt", "Mode", "Threading Mode"])[[
+        "CG Max Iterations", "CG Epsilon", "Total Time", "Dot Product Time", "SpMV Time", "axpby Time", 
+        "Dot Product BW", "SpMV BW", "axpby BW", "CG Iterations Used", "CG Residual", "Residual", "Error"]].median().reset_index()
+print(result_df)
+result_df.to_csv("./results.csv")
