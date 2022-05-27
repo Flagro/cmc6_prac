@@ -38,11 +38,12 @@ int main(int argc, char *argv[]) {
         std::cout << std::setprecision(DOUBLE_PRINT_PRECISION) << "Generated vector b:" << std::endl;
         b.print(VECTOR_PRINT_COUNT);
         std::cout << std::endl;
-
+        
         LinearSystem<MatrixElementType, VectorElementType, ResultElementType> linear_system(A, b);
         const auto cg_result = linear_system.solve_cg_method(parser.threads_num, parser.polus_used,
                                                              parser.calculate_bandwidth, 
-                                                             parser.cg_max_iterations, parser.cg_epsilon);
+                                                             parser.cg_max_iterations, parser.cg_epsilon,
+                                                             parser.max_retries);
 
         cg_result.print(DOUBLE_PRINT_PRECISION);
 

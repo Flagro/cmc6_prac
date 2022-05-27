@@ -1,6 +1,6 @@
 #pragma once
 
-enum { DEFAULT_TEST_ID = 1 };
+enum { DEFAULT_TEST_ID = 1, DEFAULT_MAX_RETIRES = 100 };
 
 class Parser {
 public:
@@ -39,6 +39,7 @@ public:
         run_tests = run_tests_found;
         calculate_bandwidth = calculate_bandwidth_found;
         test_id = DEFAULT_TEST_ID;
+        max_retries = DEFAULT_MAX_RETIRES;
     }
 
     int n_x, n_y, n_z;
@@ -52,4 +53,5 @@ public:
     bool calculate_bandwidth;
     int cg_max_iterations;
     double cg_epsilon;
+    int max_retries;
 };
