@@ -54,13 +54,13 @@ if len(sys.argv) > 1 and sys.argv[1] == "--polus":
 else:
     polus_used = False
 
-test_matrix_sizes = [tuple([10, 10, 10]), tuple([10, 25, 40]), tuple([25, 25, 25]), (50, 50, 50), tuple([100, 100, 100])]
+test_matrix_sizes = [tuple([10, 25, 40]), tuple([25, 20, 20]), tuple([100, 100, 100])]
 test_threads_counts = [1, 2, 4, 8, 10, 16, 32, 40]
 valid_test_ids = [1]
 test_test_ids = valid_test_ids
 max_cg_iterations = 200
 cg_epsilon = 0.00000001
-polus_retries_cnt = 50
+polus_retries_cnt = 5
 
 for matrix_size in test_matrix_sizes:
     for threads_count in test_threads_counts:
