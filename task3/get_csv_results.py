@@ -35,10 +35,12 @@ for line in lines:
     })
 
 result_df = pd.DataFrame(result_dict_list)
+print(result_df)
 result_df = result_df.groupby([
     "N_x", "N_y", "N_z", "Test Id", "Threads Cnt", "Expected Threads Cnt", "Mode", "Threading Mode"])[[
         "CG Max Iterations", "CG Epsilon", "Total Time", "Dot Product Time", "SpMV Time", "axpby Time", 
-        "Dot Product BW", "SpMV BW", "axpby BW", "CG Iterations Used", "CG Residual", "Residual", "Error"]].mean().reset_index()
+        "Dot Product BW", "SpMV BW", "axpby BW", "CG Iterations Used", "CG Residual", "Residual", "Error"]].median().reset_index()
+print(result_df)
 result_df = result_df.loc[result_df.groupby(["N_x", "N_y", "N_z", "Threads Cnt"])["Total Time"].idxmin()].reset_index(drop=True)
 del result_df["Error"]
 del result_df["CG Max Iterations"]
