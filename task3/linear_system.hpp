@@ -109,6 +109,9 @@ public:
             } while (!convergence);
             double timer_end = omp_get_wtime();
             result.x = x_previous;
+            if (!(i % 10)) {
+                std::cout << "Cur time: " << timer_end - timer_start << std::endl;
+            }
             total_time_all_retries += timer_end - timer_start;
             dot_product_elapsed_time_all_retries += dot_product_elapsed_time;
             spmv_elapsed_time_all_retries += spmv_elapsed_time;
