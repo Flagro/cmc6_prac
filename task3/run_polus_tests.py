@@ -59,8 +59,8 @@ test_threads_counts = [1, 2, 4, 8, 10, 16, 32, 40]
 valid_test_ids = [1]
 test_test_ids = valid_test_ids
 max_cg_iterations = 200
-cg_epsilon = 0.00001
-polus_retries_cnt = 5
+cg_epsilon = 0.00000001
+polus_retries_cnt = 50
 
 for matrix_size in test_matrix_sizes:
     for threads_count in test_threads_counts:
@@ -72,6 +72,5 @@ for matrix_size in test_matrix_sizes:
                         f.write(cur_mode_input)
                         f.close()
                         os.system("bsub < OpenMP_job.lsf")
-                        time.sleep(1)
                 else:
                     print(cur_mode_input)

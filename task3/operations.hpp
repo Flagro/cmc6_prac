@@ -7,17 +7,6 @@ template<typename result_T, typename T1, typename T2>
 result_T dot_product(const DenseVector<T1> &first_vector, const DenseVector<T2> &second_vector, 
         double *elapsed_time, bool calculate_bandwidth, double *bandwidth) {
     double timer_start = omp_get_wtime();
-    long long bandwidth_bytes = 0;
-    if (calculate_bandwidth) {
-        #pragma omp parallel for reduction(+:bandwidth_bytes)
-        for (size_t i = 0; i < first_vector.size(); ++i) {
-            bandwidth_bytes += sizeof(T1);
-            bandwidth_bytes += sizeof(T2);
-        }
-    }
-    if (first_vector.size() != second_vector.size()) {
-        throw "different vector sizes for dot prodct";
-    }
     result_T result = 0;
     #pragma omp parallel for reduction(+:result)
     for (size_t i = 0; i < first_vector.size(); ++i) {
@@ -25,7 +14,6 @@ result_T dot_product(const DenseVector<T1> &first_vector, const DenseVector<T2> 
     }
 
     double timer_end = omp_get_wtime();
-    *bandwidth += bandwidth_bytes;
     *elapsed_time += timer_end - timer_start;
     return result;
 }
@@ -34,23 +22,7 @@ template<typename result_T, typename T1, typename T2>
 DenseVector<result_T> SpMV(const SparseMatrix<T1> &sparse_matrix, const DenseVector<T2> &dense_vector, 
         double *elapsed_time, bool calculate_bandwidth, double *bandwidth) {
     double timer_start = omp_get_wtime();
-    long long bandwidth_bytes = 0;
-    if (calculate_bandwidth) {
-        #pragma omp parallel for reduction(+:bandwidth_bytes)
-        for (size_t i = 0; i < dense_vector.size(); ++i) {
-            for (size_t j = 0; j < sparse_matrix.get_ellpack_m(); ++j) {
-                bandwidth_bytes += sizeof(T1);
-                size_t cur_col = sparse_matrix.get_ellpack_col(i)[j];
-                if (cur_col > dense_vector.size()) {
-                    bandwidth_bytes += sizeof(T1);
-                    bandwidth_bytes += sizeof(T2);
-                }
-            }
-        }
-    }
-    if (sparse_matrix.size() != dense_vector.size()) {
-        throw "different sizes for SpMV";
-    }
+
     std::vector<result_T> result(sparse_matrix.size());
     
     #pragma omp parallel for
@@ -66,7 +38,6 @@ DenseVector<result_T> SpMV(const SparseMatrix<T1> &sparse_matrix, const DenseVec
     }
 
     double timer_end = omp_get_wtime();
-    *bandwidth += bandwidth_bytes;
     *elapsed_time += timer_end - timer_start;
     return DenseVector<result_T>(result);
 }
@@ -76,18 +47,7 @@ DenseVector<result_T> axpby(const T1 &a, const DenseVector<T2> &first_vector,
         const T3 &b, const DenseVector<T4> &second_vector, 
         double *elapsed_time, bool calculate_bandwidth, double *bandwidth) {
     double timer_start = omp_get_wtime();
-    long long bandwidth_bytes = 0;
-    if (calculate_bandwidth) {
-        #pragma omp parallel for reduction(+:bandwidth_bytes)
-        for (size_t i = 0; i < first_vector.size(); ++i) {
-            bandwidth_bytes += sizeof(T2);
-            bandwidth_bytes += sizeof(T4);
-        }
-    }
-    if (first_vector.size() != second_vector.size()) {
-        throw "different sizes for axpby";
-    }
-    
+
     std::vector<result_T> result(first_vector.size());
 
     #pragma omp parallel for
@@ -96,7 +56,6 @@ DenseVector<result_T> axpby(const T1 &a, const DenseVector<T2> &first_vector,
     }
 
     double timer_end = omp_get_wtime();
-    *bandwidth += bandwidth_bytes;
     *elapsed_time += timer_end - timer_start;
     return DenseVector<result_T>(result);
 }

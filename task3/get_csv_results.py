@@ -38,6 +38,24 @@ result_df = pd.DataFrame(result_dict_list)
 result_df = result_df.groupby([
     "N_x", "N_y", "N_z", "Test Id", "Threads Cnt", "Expected Threads Cnt", "Mode", "Threading Mode"])[[
         "CG Max Iterations", "CG Epsilon", "Total Time", "Dot Product Time", "SpMV Time", "axpby Time", 
-        "Dot Product BW", "SpMV BW", "axpby BW", "CG Iterations Used", "CG Residual", "Residual", "Error"]].median().reset_index()
+        "Dot Product BW", "SpMV BW", "axpby BW", "CG Iterations Used", "CG Residual", "Residual", "Error"]].mean().reset_index()
+result_df = result_df.loc[result_df.groupby(["N_x", "N_y", "N_z", "Threads Cnt"])["Total Time"].idxmin()].reset_index(drop=True)
+del result_df["Error"]
+del result_df["CG Max Iterations"]
+del result_df["CG Epsilon"]
+del result_df["Test Id"]
+del result_df["Expected Threads Cnt"]
+del result_df["Dot Product BW"]
+del result_df["SpMV BW"]
+del result_df["axpby BW"]
+del result_df["CG Residual"]
+del result_df["Mode"]
+result_df["N_x"] = result_df["N_x"].astype(int)
+result_df["N_y"] = result_df["N_y"].astype(int)
+result_df["N_z"] = result_df["N_z"].astype(int)
+result_df["N"] = result_df["N_x"] * result_df["N_y"] * result_df["N_z"]
+del result_df["N_x"]
+del result_df["N_y"]
+del result_df["N_z"]
 print(result_df)
 result_df.to_csv("./results.csv")
