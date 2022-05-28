@@ -5,7 +5,7 @@ import time
 
 def get_bsub_input_simple(matrix_size, threads_count, test_id, max_cg_iterations, cg_epsilon):
     core_units = threads_count // 8 + 1
-    epsilon_string = format(cg_epsilon, 'f')
+    epsilon_string = "{:.16f}".format(cg_epsilon)
     return (f"#BSUB -J \"OpenMP_job_{matrix_size[0]*matrix_size[1]*matrix_size[2]}_{threads_count}_{1}\"\n"
             f"#BSUB -n {core_units}\n"
             f"#BSUB -W 0:15\n"
@@ -16,7 +16,7 @@ def get_bsub_input_simple(matrix_size, threads_count, test_id, max_cg_iterations
 
 
 def get_bsub_input_one_threads_per_unit(matrix_size, threads_count, test_id, max_cg_iterations, cg_epsilon):
-    epsilon_string = format(cg_epsilon, 'f')
+    epsilon_string = "{:.16f}".format(cg_epsilon)
     return (f"#BSUB -J \"OpenMP_job_{matrix_size[0]*matrix_size[1]*matrix_size[2]}_{threads_count}_{2}\"\n"
             f"#BSUB -W 0:15\n"
             f"#BSUB -o a.out.out\n" 
@@ -27,7 +27,7 @@ def get_bsub_input_one_threads_per_unit(matrix_size, threads_count, test_id, max
 
 def get_bsub_input_two_threads_per_unit(matrix_size, threads_count, test_id, max_cg_iterations, cg_epsilon):
     core_units = (threads_count + 1) // 2
-    epsilon_string = format(cg_epsilon, 'f')
+    epsilon_string = "{:.16f}".format(cg_epsilon)
     return (f"#BSUB -J \"OpenMP_job_{matrix_size[0]*matrix_size[1]*matrix_size[2]}_{threads_count}_{3}\"\n"
             f"#BSUB -W 0:15\n"
             f"#BSUB -o a.out.out\n"
@@ -54,7 +54,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "--polus":
 else:
     polus_used = False
 
-test_matrix_sizes = [tuple([10, 25, 40]), tuple([25, 20, 20]), tuple([100, 100, 100])]
+test_matrix_sizes = [tuple([10, 25, 40]), tuple([40, 50, 50]), tuple([100, 100, 100])]
 test_threads_counts = [1, 2, 4, 8, 10, 16, 32, 40]
 valid_test_ids = [1]
 test_test_ids = valid_test_ids
