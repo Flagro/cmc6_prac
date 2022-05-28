@@ -2,7 +2,7 @@ from unittest import result
 import pandas as pd
 
 
-with open("./output1.txt") as file:
+with open("./output.txt") as file:
     lines = file.readlines()
 
 lines = [line.replace("\n", "") for line in lines]

@@ -55,7 +55,7 @@ else:
     polus_used = False
 
 test_matrix_sizes = [tuple([10, 25, 40]), tuple([40, 50, 50]), tuple([100, 100, 100])]
-test_threads_counts = [1, 2, 4, 8, 10, 16, 32, 40]
+test_threads_counts = [1, 2, 4, 8, 10, 16, 20, 32, 40]
 valid_test_ids = [1]
 test_test_ids = valid_test_ids
 max_cg_iterations = 200
